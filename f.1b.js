@@ -17,6 +17,7 @@ function solve() {
     const players = 2;
     const maxDigit = 10;
     const k = Number(inputLines[0]);
+    const keyCountMap = {};
     
     const maxClicks = players * k;
 
@@ -24,18 +25,20 @@ function solve() {
         .join('')
         .split('');
 
+    keyboard.forEach((key) => {
+        if (keyCountMap[key] === undefined) {
+            keyCountMap[key] = 0;
+        } 
+
+        keyCountMap[key]++;
+    });
+
     let points = 0;
 
     for (let t = 0; t <= maxDigit; t++) {
-        let clicks = 0;
-        
-        keyboard.forEach((key) => {
-            if (Number(key) === t) {
-                clicks++;
-            }
-        });
+        const keyCount = keyCountMap[String(t)];
 
-        if (clicks && clicks <= maxClicks) {
+        if (keyCount && keyCount <= maxClicks) {
             points++;
         }
     }
