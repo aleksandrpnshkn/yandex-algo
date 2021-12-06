@@ -15,6 +15,7 @@ process.stdin.on('end', solve);
 
 function solve() {
     const players = 2;
+    const maxDigit = 10;
     const k = Number(inputLines[0]);
     
     const maxClicks = players * k;
@@ -25,7 +26,7 @@ function solve() {
 
     let points = 0;
 
-    for (let t = 0; t < 10; t++) {
+    for (let t = 0; t <= maxDigit; t++) {
         let clicks = 0;
         
         keyboard.forEach((key) => {
