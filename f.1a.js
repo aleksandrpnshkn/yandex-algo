@@ -19,24 +19,24 @@ function solve() {
     const houses = readIntArray();
     const distances = [];
 
-    let leftPos = null;
-    let rightPos = null;
+    let leftPos;
+    let rightPos;
 
     for (let pos = 0; pos < houses.length; pos++) {
         if (houses[pos] === 0) {
             leftPos = pos;
-            rightPos = null;
+            rightPos = undefined;
         }
 
-        if (rightPos === null) {
-            const fromPos = leftPos !== null ? leftPos + 1 : 0;
+        if (rightPos === undefined) {
+            const fromPos = leftPos !== undefined ? leftPos + 1 : 0;
             rightPos = houses.indexOf(0, fromPos);
         }
 
-        let leftDistance = null;
-        let rightDistance = null;
+        let leftDistance;
+        let rightDistance;
 
-        if (leftPos !== null) {
+        if (leftPos > -1) {
             leftDistance = pos - leftPos;
         }
 
@@ -44,11 +44,11 @@ function solve() {
             rightDistance = rightPos - pos;
         }
 
-        let smallestDistance = null;
+        let smallestDistance;
 
-        if (rightDistance === null) {
+        if (rightDistance === undefined) {
             smallestDistance = leftDistance;
-        } else if (leftDistance === null) {
+        } else if (leftDistance === undefined) {
             smallestDistance = rightDistance;
         } else {
             smallestDistance = Math.min(leftDistance, rightDistance);
