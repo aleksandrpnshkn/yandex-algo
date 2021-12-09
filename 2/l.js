@@ -21,18 +21,15 @@ function solve() {
     process.stdout.write(String(rem));
 }
 
-const cache = {};
+function fibMod(n, mod) {
+    let prev = 1;
+    let curr = 1;
 
-function fibMod(n, mod, acc = 0) {
-    if (n === 0 || n === 1) {
-        return 1;
+    for (let i = 2; i <= n; i++) {
+        [prev, curr] = [curr, (prev + curr) % mod];
     }
 
-    if (cache[n]) {
-        return cache[n];
-    }
-
-    return cache[n] = (fibMod(n - 1, mod) + fibMod(n - 2, mod)) % mod;
+    return curr;
 }
 
 function readArray() {
