@@ -15,15 +15,15 @@ process.stdin.on('end', solve);
 function solve() {
     const [traineeIndex, numberOfDigits] = readArray();
 
-    const numberOfCommits = fib(Number(traineeIndex));
-    const rem = numberOfCommits % (10 ** numberOfDigits);
+    const mod = 10 ** numberOfDigits;
+    const rem = fibMod(Number(traineeIndex), mod);
 
     process.stdout.write(String(rem));
 }
 
 const cache = {};
 
-function fib(n) {
+function fibMod(n, mod, acc = 0) {
     if (n === 0 || n === 1) {
         return 1;
     }
@@ -32,7 +32,7 @@ function fib(n) {
         return cache[n];
     }
 
-    return cache[n] = fib(n - 1) + fib(n - 2);
+    return cache[n] = (fibMod(n - 1, mod) + fibMod(n - 2, mod)) % mod;
 }
 
 function readArray() {
