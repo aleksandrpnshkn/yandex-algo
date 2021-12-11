@@ -29,13 +29,14 @@ let curLine = 0;
 reader.on('line', (line) => {
     inputLines.push(line);
 });
+
 class Stack {
     constructor() {
         this._items = [];
     }
 
     push(item) {
-        return this._items.push(item);
+        this._items.push(item);
     }
 
     pop() {
@@ -45,39 +46,66 @@ class Stack {
 
         return this._items.pop();
     }
+
+    size() {
+        return this._items.length;
+    }
+}
+
+class Calculator {
+    constructor() {
+        this._operands = new Stack();
+    }
+
+    addOperand(operand) {
+        this._operands.push(operand);
+    }
+
+    executeOperation(operation) {
+        const op2 = this._operands.pop();
+        const op1 = this._operands.pop();
+        let result;
+
+        switch (operation) {
+            case '-':
+                result = op1 - op2;
+                break;
+            case '+':
+                result = op1 + op2;
+                break;
+            case '*':
+                result = op1 * op2;
+                break;
+            case '/':
+                result = Math.floor(op1 / op2);
+                break;
+            default:
+                throw new Error('Неизвестная операция');
+        }
+
+        this._operands.push(result);
+    }
+
+    getResult() {
+        return this._operands.pop();
+    }
 }
 
 process.stdin.on('end', solve);
 
-const operations = {
-    '-': (a, b) => a - b,
-    '+': (a, b) => a + b,
-    '*': (a, b) => a * b,
-    '/': (a, b) => Math.floor(a / b),
-};
-
 function solve() {
     const expression = readArray();
-    const expressionStack = new Stack();
+    const calculator = new Calculator();
 
     expression.forEach((element) => {
         if (isOperand(element)) {
-            expressionStack.push(Number(element));
-            return;
+            calculator.addOperand(Number(element));
+        } else {
+            calculator.executeOperation(element);
         }
-
-        if (! element in operations) {
-            throw new Error('Неизвестная операция');
-        }
-
-        let op1 = expressionStack.pop();
-        let op2 = expressionStack.pop();
-        let result = operations[element](op1, op2);
-
-        expressionStack.push(result);
     });
 
-    process.stdout.write(String(expressionStack.pop()));
+    process.stdout.write(String(calculator.getResult()) + '\n');
 }
 
 function isOperand(n) {
