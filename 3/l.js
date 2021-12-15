@@ -14,28 +14,50 @@ process.stdin.on('end', solve);
 
 function solve() {
     curLine++;
-    const savingsStats = readNumArray();
+    const savingsStats = readArray();
     const cost = readNumber();
     const needToBuy = 2;
-    let bought = 0;
 
-    let neededSavings = cost;
-
+    const neededSavings = [];
     const daysOfPurchase = [];
 
-    for (let day = 1; day <= savingsStats.length && bought < needToBuy; day++) {
-        if (savingsStats[day - 1] >= neededSavings) {
-            bought++;
-            neededSavings += cost;
-            daysOfPurchase.push(day);
+    for (let i = 1; i <= needToBuy; i++) {
+        neededSavings.push(cost * i);
+    }
+
+    let prevIndex;
+
+    neededSavings.forEach((needed) => {
+        const foundIndex = searchNearestBinary(savingsStats, needed, prevIndex || 0, savingsStats.length);
+
+        if (foundIndex >= 0) {
+            daysOfPurchase.push(foundIndex + 1);
+        } else {
+            daysOfPurchase.push(-1);
         }
+
+        prevIndex = foundIndex;
+    });
+
+    process.stdout.write(daysOfPurchase.join(' ') + '\n');
+}
+
+function searchNearestBinary(arr, needed, left, right) {
+    if (right <= left) {
+        return -1;
     }
 
-    while (daysOfPurchase.length < needToBuy) {
-        daysOfPurchase.push(-1);
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] < needed) {
+        return searchNearestBinary(arr, needed, mid + 1, right);
     }
 
-    process.stdout.write(daysOfPurchase.join(' '));
+    if (arr[mid - 1] !== undefined && arr[mid - 1] >= needed) {
+        return searchNearestBinary(arr, needed, left, mid);
+    }
+
+    return mid;
 }
 
 function readNumber() {
@@ -48,8 +70,4 @@ function readArray() {
     const arr = inputLines[curLine].trim().split(' ');
     curLine++;
     return arr;
-}
-
-function readNumArray() {
-    return readArray().map((n) => Number(n));
 }
