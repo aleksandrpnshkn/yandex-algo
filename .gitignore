@@ -1,3 +1,4 @@
 input.txt
 *.zip
 /trash/*
+node_modules/
