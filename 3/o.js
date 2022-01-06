@@ -27,6 +27,11 @@ class Diffs {
             this._sortedDiffs.shift();
         }
 
+        if (diff < this.getMin()) {
+            this._sortedDiffs.push(diff);
+            return;
+        }
+
         this._sortedDiffs.push(diff);
         this._sortedDiffs.sort((a, b) => b - a);
     }
@@ -37,6 +42,14 @@ class Diffs {
         }
 
         return this._sortedDiffs[0];
+    }
+
+    getMin() {
+        if (this.isEmpty()) {
+            return +Infinity;
+        }
+
+        return this._sortedDiffs[this.size() - 1];
     }
 
     size() {
