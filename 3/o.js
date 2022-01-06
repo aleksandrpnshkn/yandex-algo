@@ -3,7 +3,7 @@ const reader = require('readline')
         input: process.stdin,
     });
 
-const inputLines = [];
+let inputLines = [];
 let curLine = 0;
 
 reader.on('line', (line) => {
@@ -24,12 +24,8 @@ function solve() {
     for (let i = 0; i < areas.length; i++) {
         const currDiffs = [];
 
-        for (let j = i + 1; j < areas.length; j++) {
-            const diff = Math.abs(areas[i] - areas[j]);
-
-            if (currDiffs.length < k) {
-                currDiffs.push(diff);
-            }
+        for (let j = i + 1; j < areas.length && currDiffs.length < k; j++) {
+            currDiffs.push(Math.abs(areas[i] - areas[j]));
         }
 
         diffs = mergeSorted(diffs, currDiffs, k);
