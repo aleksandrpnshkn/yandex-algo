@@ -17,50 +17,33 @@ function solve() {
     const areas = readNumericArray();
     const k = readNumber();
 
-    let diffs = [];
-
-    areas.sort((a, b) => a - b);
+    let diffsCounter = {};
 
     for (let i = 0; i < areas.length; i++) {
-        const currDiffs = [];
+        for (let j = i + 1, m = 0; j < areas.length && m <= k; j++, m++) {
+            const diff = Math.abs(areas[i] - areas[j]);
 
-        for (let j = i + 1; j < areas.length && currDiffs.length < k; j++) {
-            currDiffs.push(Math.abs(areas[i] - areas[j]));
-        }
+            if (diffsCounter[diff] === undefined) {
+                diffsCounter[diff] = 0;
+            }
 
-        diffs = mergeSorted(diffs, currDiffs, k);
-    }
-
-    process.stdout.write(String(diffs[k - 1]) + '\n');
-}
-
-function mergeSorted(arr1, arr2, maxSize) {
-    const merged = [];
-
-    let i = 0;
-    let k = 0;
-
-    while (i < arr1.length && k < arr2.length && merged.length < maxSize) {
-        if (arr1[i] <= arr2[k]) {
-            merged.push(arr1[i]);
-            i++;
-        } else {
-            merged.push(arr2[k]);
-            k++;
+            diffsCounter[diff]++;
         }
     }
 
-    while (i < arr1.length && merged.length < maxSize) {
-        merged.push(arr1[i]);
-        i++;
-    }
+    diffsCounter = Object.entries(diffsCounter);
+    diffsCounter = diffsCounter.sort((a, b) => a[0] - b[0]);
 
-    while (k < arr2.length && merged.length < maxSize) {
-        merged.push(arr2[k]);
-        k++;
-    }
+    let acc = 0;
 
-    return merged;
+    for (let i = 0; i < diffsCounter.length; i++) {
+        acc += diffsCounter[i][1];
+
+        if (acc >= k) {
+            process.stdout.write(String(diffsCounter[i][0]) + '\n');
+            return;
+        }
+    }
 }
 
 function readNumber() {
