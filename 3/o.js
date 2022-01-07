@@ -3,7 +3,7 @@ const reader = require('readline')
         input: process.stdin,
     });
 
-const inputLines = [];
+let inputLines = [];
 let curLine = 0;
 
 reader.on('line', (line) => {
@@ -16,35 +16,27 @@ function solve() {
     readNumber();
     const areas = readNumericArray();
     const k = readNumber();
+    const MAX_AREA = 1000000;
 
-    const diffs = [];
+    let diffsCounter = new Array(MAX_AREA);
+    diffsCounter.fill(0);
 
     for (let i = 0; i < areas.length; i++) {
         for (let j = i + 1; j < areas.length; j++) {
-            diffs.push(Math.abs(areas[i] - areas[j]));
+            diffsCounter[Math.abs(areas[i] - areas[j])]++;
         }
     }
 
-    bubbleSort(diffs);
+    let acc = 0;
 
-    process.stdout.write(String(diffs[k - 1]) + '\n');
-}
+    for (let i = 0; i < diffsCounter.length; i++) {
+        acc += diffsCounter[i];
 
-function bubbleSort(arr) {
-    let hasChanges = true;
-
-    while (hasChanges) {
-        hasChanges = false;
-
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i-1] > arr[i]) {
-                [arr[i-1], arr[i]] = [arr[i], arr[i-1]];
-                hasChanges = true;
-            }
+        if (acc >= k) {
+            process.stdout.write(String(i) + '\n');
+            return;
         }
     }
-
-    return arr;
 }
 
 function readNumber() {
