@@ -1,13 +1,29 @@
 /*
- * ID успешной посылки: 63468130
+ * ID успешной посылки: 63495237
  *
- * Общая сложность сортировки - O(n log n) за счет перебора n элементов на каждом шаге рекурсии (всего шагов log n)
- * Доп. память сортировки - O(1) для пары вспомогательных переменных, массив сортируется на месте
  *
- * Описание:
- *  Общая идея алгоритма расписана в самой задаче.
- *  pivot выбирается рандомно, за счет чего среднее количество шагов равно log n.
- *  Сортировка работает только с уникальными значениями (в данном случае логин уникален)
+ * -- ПРИНЦИП РАБОТЫ --
+ * Общая идея алгоритма расписана в самой задаче.
+ * pivot выбирается рандомно, за счет чего среднее количество шагов равно log n.
+ * Сортировка работает только с уникальными значениями (в данном случае логин уникален)
+ *
+ *
+ * -- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
+ * Т.к. значения уникальны, то указатели обязательно встретятся в одной точке, разделяя значения на less и greater
+ *
+ *
+ * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+ * n - длина сортируемого массива.
+ * На каждом шаге рекурсии перебирается n элементов. Всего шагов log n. Т.е. log n шагов по n элементов.
+ * Итоговая сложность сортировки: O(n log n)
+ *
+ * Подготовка массива
+ *
+ *
+ * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+ * Промежуточные массивы не создаются, т.к. массив сортируется на месте.
+ * Но есть O(1) для пары вспомогательных переменных на шаг рекурсии.
+ * Т.к. память не освобождается до выхода из рекурсии, то итоговый расход памяти в сортировке - O(log n).
  */
 
 const reader = require('readline')
@@ -29,23 +45,23 @@ function solve() {
 
     const table = inputLines.slice(1, rowsCount + 1)
         .map((row) => {
-            return row.trim().split(' ').map((cell, index) => {
-                switch (index) {
-                    case 1:
-                    case 2: return Number(cell);
-                    default: return cell;
-                }
-            });
+            row = row.split(' ');
+
+            return {
+                name: row[0],
+                tasks: Number(row[1]),
+                penalty: Number(row[2]),
+            };
         });
 
-    quickSortInPlace(table, 0, table.length);
+    quickSortInPlace(isBetter, table, 0, rowsCount);
 
     table.forEach((row) => {
-        process.stdout.write(row[0] + '\n');
+        process.stdout.write(row.name + '\n');
     });
 }
 
-function quickSortInPlace(arr, start, end) {
+function quickSortInPlace(isLess, arr, start, end) {
     if (end - start < 2) {
         return;
     }
@@ -58,15 +74,14 @@ function quickSortInPlace(arr, start, end) {
     while (true) {
         while (
             leftPos < rightPos
-            // можно развить идею и передавать компараторы в аргументах isLess/isGreater, чтобы не привязывать сортировку к конкретной таблице
-            && isBetter(arr[leftPos], pivot)
+            && isLess(arr[leftPos], pivot)
         ) {
             leftPos++;
         }
 
         while (
             rightPos > leftPos
-            && isWorse(arr[rightPos], pivot)
+            && isLess(pivot, arr[rightPos])
         ) {
             rightPos--;
         }
@@ -78,23 +93,14 @@ function quickSortInPlace(arr, start, end) {
         [arr[leftPos], arr[rightPos]] = [arr[rightPos], arr[leftPos]];
     }
 
-    quickSortInPlace(arr, start, leftPos);
-    quickSortInPlace(arr, rightPos, end);
+    quickSortInPlace(isLess, arr, start, leftPos);
+    quickSortInPlace(isLess, arr, rightPos, end);
 }
 
-function isBetter(item, pivotItem) {
-    // сперва сравнить по задачам
-    return item[1] > pivotItem[1]
-        // далее сравнить по штрафу
-        || item[1] === pivotItem[1] && item[2] < pivotItem[2]
-        // далее по именам
-        || item[1] === pivotItem[1] && item[2] === pivotItem[2] && item[0] < pivotItem[0];
-}
-
-function isWorse(item, pivotItem) {
-    return item[1] < pivotItem[1]
-        || item[1] === pivotItem[1] && item[2] > pivotItem[2]
-        || item[1] === pivotItem[1] && item[2] === pivotItem[2] && item[0] > pivotItem[0];
+function isBetter(row, thanRow) {
+    return row.tasks > thanRow.tasks
+        || row.tasks === thanRow.tasks && row.penalty < thanRow.penalty
+        || row.tasks === thanRow.tasks && row.penalty === thanRow.penalty && row.name < thanRow.name;
 }
 
 function readNumber() {
