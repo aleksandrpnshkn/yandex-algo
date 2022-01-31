@@ -81,6 +81,27 @@ reader.on('line', (line) => {
 
 process.stdin.on('end', solve);
 
+class Output {
+    constructor() {
+        this._output = '';
+    }
+
+    addLine(line) {
+        this._output += line + '\n';
+    }
+
+    isFull() {
+        this._output.length >= 1000;
+    }
+
+    print() {
+        process.stdout.write(this._output);
+        this._output = '';
+    }
+}
+
+const output = new Output();
+
 function solve() {
     const RESULTS_COUNT = 5;
 
@@ -139,6 +160,12 @@ function solve() {
         });
         topResults = topResults.slice(0, RESULTS_COUNT).map((docResult) => Number(docResult[0]) + 1).join(' ');
 
-        process.stdout.write(topResults + '\n');
+        output.addLine(topResults);
+
+        if (output.isFull()) {
+            output.print();
+        }
     });
+
+    output.print();
 }
