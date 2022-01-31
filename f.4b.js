@@ -1,5 +1,5 @@
 /*
- * ID успешной посылки: 64660153
+ * ID успешной посылки: 64693752
  *
  *
  * -- ПРИНЦИП РАБОТЫ --
@@ -78,12 +78,12 @@ class Bucket {
     }
 }
 
+const NOT_FOUND_VALUE = 'None';
+
 class HashTable {
     constructor(size) {
         this._size = size;
         this._buckets = new Array(size);
-
-        this.NOT_FOUND_VALUE = 'None';
     }
 
     put(key, value) {
@@ -111,12 +111,12 @@ class HashTable {
         const headBucket = this._buckets[bucketIndex];
 
         if (! headBucket) {
-            return this.NOT_FOUND_VALUE;
+            return NOT_FOUND_VALUE;
         }
 
         const bucket = this._searchInCollisions(key, headBucket);
 
-        return bucket ? bucket.value : this.NOT_FOUND_VALUE;
+        return bucket ? bucket.value : NOT_FOUND_VALUE;
     }
 
     delete(key) {
@@ -124,13 +124,13 @@ class HashTable {
         const headBucket = this._buckets[bucketIndex];
 
         if (! headBucket) {
-            return this.NOT_FOUND_VALUE;
+            return NOT_FOUND_VALUE;
         }
 
         const bucketToDelete = this._searchInCollisions(key, headBucket);
 
         if (! bucketToDelete) {
-            return this.NOT_FOUND_VALUE;
+            return NOT_FOUND_VALUE;
         }
 
         if (bucketToDelete === headBucket) {
