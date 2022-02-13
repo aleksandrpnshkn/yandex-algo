@@ -17,49 +17,13 @@ function solve() {
     const arr = readArray();
 
     arr.sort((a, b) => {
-        for (let i = 0; i < Math.max(a.length, b.length); i++) {
-            if (a[i] === undefined) {
-                if (b[i] === a[0]) {
-                    continue;
-                }
-
-                return b[i] - a[0];
-            }
-
-            if (b[i] === undefined) {
-                if (b[0] === a[i]) {
-                    continue;
-                }
-
-                return b[0] - a[i];
-            }
-
-            if (a[i] < b[i]) {
-                return 1;
-            }
-
-            if (a[i] > b[i]) {
-                return -1;
-            }
+        if (a + b > b + a) {
+            return -1;
+        } else if (a + b < b + a) {
+            return 1;
+        } else {
+            return 0;
         }
-
-        if (a.length !== b.length) {
-            for (let i = 1; i < Math.min(a.length, b.length); i++) {
-                if (a[i-1] === a[i]) {
-                    continue;
-                }
-
-                if (a.length < b.length) {
-                    return a[i-1] - a[i];
-                }
-
-                if (a.length > b.length) {
-                    return a[i] - a[i-1];
-                }
-            }
-        }
-
-        return 0;
     });
 
     process.stdout.write(arr.join('') + '\n');
