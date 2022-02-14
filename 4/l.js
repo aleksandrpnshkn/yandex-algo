@@ -19,68 +19,40 @@ function solve() {
     const scores2 = readNumericArray();
     const MAX_SCORE = 255;
 
-    let windowLength = Math.min(scores1.length, scores2.length);
-    let l1 = 0;
-    let r1 = windowLength - 1;
+    let scores2Index = new Array(MAX_SCORE + 1);
 
-    while (windowLength) {
-        const window1 = scores1.slice(0, windowLength);
-        const window2 = scores2.slice(0, windowLength);
-
-        const counter1 = new Array(MAX_SCORE + 1);
-        counter1.fill(0);
-        window1.forEach((points) => counter1[points]++);
-
-        let sum1 = window1.reduce((sum, score) => sum + score);
-        let sum2 = window2.reduce((sum, score) => sum + score);
-
-        do {
-            let currSum2 = sum2;
-            let l2 = 0;
-            let r2 = windowLength - 1;
-
-            const counter2 = new Array(MAX_SCORE + 1);
-            counter2.fill(0);
-            window2.forEach((score) => counter2[score]++);
-
-            do {
-                if (sum1 === currSum2) {
-                    let theSame = true;
-
-                    counter1.forEach((times, score) => {
-                        if (counter2[score] !== times) {
-                            theSame = false;
-                        }
-                    });
-
-                    if (theSame) {
-                        process.stdout.write(String(windowLength) + '\n');
-                        return;
-                    }
-                }
-
-                counter2[scores2[l2]]--;
-                currSum2 -= scores2[l2];
-                l2++;
-                r2++;
-                counter2[scores2[r2]] = (counter2[scores2[r2]] || 0) + 1;
-                currSum2 += scores2[r2];
-            } while (r2 < scores2.length);
-
-            counter1[scores1[l1]]--;
-            sum1 -= scores1[l1];
-            l1++;
-            r1++;
-            counter1[scores1[r1]] = (counter1[scores1[r1]] || 0) + 1;
-            sum1 += scores1[r1];
-        } while (r1 < scores1.length);
-
-        windowLength--;
-        r1 = windowLength - 1;
-        l1 = 0;
+    for (let i = 0; i < scores2Index.length; i++) {
+        scores2Index[i] = [];
     }
 
-    process.stdout.write('0\n');
+    scores2.forEach((score, index) => scores2Index[score].push(index));
+
+    let max = 0;
+
+    scores1.forEach((score, pos1) => {
+        scores2Index[score].forEach((pos2) => {
+            const length = getSequenceLength(scores1, pos1, scores2, pos2);
+            max = Math.max(max, length);
+        });
+    })
+
+    process.stdout.write(String(max) + '\n');
+}
+
+function getSequenceLength(arr1, pos1, arr2, pos2) {
+    let length = 0;
+
+    while (
+        pos1 < arr1.length
+        && pos2 < arr2.length
+        && arr1[pos1] === arr2[pos2]
+    ) {
+        length++;
+        pos1++;
+        pos2++;
+    }
+
+    return length;
 }
 
 function readNumericArray() {
