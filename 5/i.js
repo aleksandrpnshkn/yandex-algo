@@ -1,44 +1,51 @@
+const reader = require('readline')
+    .createInterface({
+        input: process.stdin,
+    });
 
-// // Comment it before submitting
-// class Node {
-//     constructor(value, left = null, right = null) {
-//         this.value = value;
-//         this.left = left;
-//         this.right = right;
-//     }
-// }
+const inputLines = [];
+let curLine = 0;
 
-function printRange(node, left, right) {
-    const results = [];
+reader.on('line', (line) => {
+    inputLines.push(line);
+});
 
-    walk(node, left, right);
-    process.stdout.write(results.join(' ') + '\n');
+process.stdin.on('end', solve);
 
-    function walk(node, left, right) {
-        if (node.left && node.value >= left) {
-            walk(node.left, left, right);
-        }
+function solve() {
+    const minN = 1;
+    const maxN = readNumber();
 
-        if (node.value >= left && node.value <= right) {
-            results.push(node.value);
-        }
-
-        if (node.right && node.value <= right) {
-            walk(node.right, left, right);
-        }
-    }
+    process.stdout.write(String(countPossibleTreeCombs(minN, maxN)) + '\n');
 }
 
-// function test() {
-//     var node1 = new Node(2, null, null);
-//     var node2 = new Node(1, null, node1);
-//     var node3 = new Node(8, null, null);
-//     var node4 = new Node(8, null, node3);
-//     var node5 = new Node(9, node4, null);
-//     var node6 = new Node(10, node5, null);
-//     var node7 = new Node(5, node2, node6);
-//     printRange(node7, 2, 8);
-//     // expected output: 2 5 8 8
-// }
+function countPossibleTreeCombs(minN, maxN) {
+    if (maxN === minN) {
+        return 1;
+    }
 
-// test();
+    let combsCounter = 0;
+
+    for (let n = minN; n <= maxN; n++) {
+        let leftCombsCounter = 1;
+        let rightCombsCounter = 1;
+
+        if (n > minN) {
+            leftCombsCounter = countPossibleTreeCombs(minN, n - 1);
+        }
+
+        if (n < maxN) {
+            rightCombsCounter = countPossibleTreeCombs(n + 1, maxN);
+        }
+
+        combsCounter += leftCombsCounter * rightCombsCounter;
+    }
+
+    return combsCounter;
+}
+
+function readNumber() {
+    const num = Number(inputLines[curLine]);
+    curLine++;
+    return num;
+}
