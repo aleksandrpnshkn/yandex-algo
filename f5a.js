@@ -22,6 +22,9 @@
  */
 
 class Heap {
+    /**
+     * @param {Function} isLower - компаратор, который определяет что A должно стоять в дереве ниже чем B
+     */
     constructor(isLower) {
         this._items = [-1];
         this._isLower = isLower;
