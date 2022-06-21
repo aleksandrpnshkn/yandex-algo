@@ -37,7 +37,7 @@ function solve() {
             let currCombinedWeight = 0;
 
             if (goldBarWeight <= backpackWeight) {
-                currCombinedWeight = weightRemains < 0 ? goldBarWeight : goldBarWeight + prevWeights[weightRemains];
+                currCombinedWeight = goldBarWeight + prevWeights[weightRemains];
             }
 
             currWeights[backpackWeight] = Math.max(prevBarMaxWeight, currCombinedWeight);
