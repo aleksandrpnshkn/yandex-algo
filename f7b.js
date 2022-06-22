@@ -1,4 +1,4 @@
-// ID успешной посылки 69054724
+// ID успешной посылки 69107181
 
 /*
  * -- ПРИНЦИП РАБОТЫ --
@@ -17,13 +17,14 @@
  *
  * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
  * n - количество матчей
+ * pSum - сумма очков
  *
  * getSum - O(n)
- * Динамика - O(n^2)
- * Итого: O(n^2)
+ * Динамика - O(n * pSum)
+ * Итого: O(n * pSum)
  *
  * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
- * Динамика - два массива, значит O(n)
+ * Динамика - два массива длинной в половину от суммы очков, значит O(pSum)
  */
 
 const reader = require('readline')
@@ -53,6 +54,12 @@ function solve() {
     }
 
     const pointsTotalHalf = pointsTotal / 2;
+    const maxPoints = Math.max(...matches);
+
+    if (maxPoints > pointsTotalHalf) {
+        process.stdout.write('False\n');
+        return;
+    }
 
     let prevSums;
     // добавить каемочку
